@@ -4,20 +4,27 @@ using System.Collections;
 public class Character : MonoBehaviour {
 
 	 public float velocidad = 10f;
-	 public float jump = 10f;
+	 public float jump = 1f;
 	 public bool flagMoveUp = false;
 	 public bool flagMoveDown = false;
 	 public bool flagJump = false;
 	 private float positionActual = 0f;
 	 private float positionFutura = 0f;
+	 private float Timer = 0.0f;
+	 public float TimerMin = 3.0f;
 	 Camera cam;
 
 	 void Start () {
 	   cam = Camera.main;
 	 }
-
 	// Update is called once per frame
 	void Update () {
+		Timer += Time.deltaTime;
+		if (Timer > TimerMin) {
+			Timer = 0.0f;
+			SpawnObstacules();
+		}
+		Debug.Log(Timer);
 		if (flagMoveUp) {
 			if (transform.position.y > positionFutura) {
 				positionActual = transform.position.y;
@@ -67,4 +74,8 @@ public class Character : MonoBehaviour {
 			cam.GetComponent<Rigidbody2D>().velocity = new Vector2 (0, -velocidad);
 		}
   }
+
+	void SpawnObstacules () {
+		Debug.Log("lola");
+	}
 }
