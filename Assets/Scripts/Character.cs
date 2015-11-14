@@ -18,6 +18,8 @@ public class Character : MonoBehaviour {
 	 public GameObject obstaculeDown;
    public GameObject obstaculeUp;
    public GameObject obstaculeDeath;
+   public GameObject muerte;
+   public GameObject gameOver;
 	 private Vector2 spawnPoint;
 
 	 void Start () {
@@ -78,6 +80,8 @@ public class Character : MonoBehaviour {
 				flagMoveUp = true;
 			  positionFutura = positionActual + 9f;
 				GetComponent<Rigidbody2D>().velocity = new Vector2 (0, +velocidad);
+			} else {
+				StartCoroutine(Wait());
 			}
 		}
 		if (colider.name == "objectDown(Clone)" && !flagMoveDown) {
@@ -87,20 +91,48 @@ public class Character : MonoBehaviour {
 				flagMoveDown = true;
 			  positionFutura = positionActual - 9f;
 				GetComponent<Rigidbody2D>().velocity = new Vector2 (0, -velocidad);
+			} else {
+				StartCoroutine(Wait());
 			}
+		}
+		if (colider.name == "Obstaculo(Clone)") {
+			StartCoroutine(Wait());
 		}
   }
 
 	void SpawnObstacules () {
-		timerNextSpawn = Random.Range(TimerMin, TimerMin * dificulty);
-		spawnPoint = new Vector2(transform.position.x + 16, positionActual);
+		timerNextSpawn = Random.Range(0.4f, 2.2f);
+		Debug.Log(timerNextSpawn);
 		int selectObstacule = Random.Range(0,3);
 		if (selectObstacule == 2) {
+			spawnPoint = new Vector2(transform.position.x + 16, 0);
+			Instantiate(obstaculeUp, spawnPoint, Quaternion.identity);
+			spawnPoint = new Vector2(transform.position.x + 16, 9);
+			Instantiate(obstaculeUp, spawnPoint, Quaternion.identity);
+			spawnPoint = new Vector2(transform.position.x + 16, -9);
 			Instantiate(obstaculeUp, spawnPoint, Quaternion.identity);
 		} else if(selectObstacule == 1) {
+			spawnPoint = new Vector2(transform.position.x + 16, 0);
+			Instantiate(obstaculeDown, spawnPoint, Quaternion.identity);
+			spawnPoint = new Vector2(transform.position.x + 16, 9);
+			Instantiate(obstaculeDown, spawnPoint, Quaternion.identity);
+			spawnPoint = new Vector2(transform.position.x + 16, -9);
 			Instantiate(obstaculeDown, spawnPoint, Quaternion.identity);
 		} else {
+			spawnPoint = new Vector2(transform.position.x + 16, 0);
+			Instantiate(obstaculeDeath, spawnPoint, Quaternion.identity);
+			spawnPoint = new Vector2(transform.position.x + 16, 9);
+			Instantiate(obstaculeDeath, spawnPoint, Quaternion.identity);
+			spawnPoint = new Vector2(transform.position.x + 16, -9);
 			Instantiate(obstaculeDeath, spawnPoint, Quaternion.identity);
 		}
 	}
+
+	IEnumerator Wait()  {
+        // suspend execution for 5 seconds
+				spawnPoint = new Vector2(0, positionActual);
+				Instantiate(gameOver, spawnPoint, Quaternion.identity);
+				yield return new WaitForSeconds(3f);
+				Application.LoadLevel(0);
+  }
 }
