@@ -18,16 +18,16 @@ public class Character : MonoBehaviour {
 	 public GameObject obstaculeDown;
    public GameObject obstaculeUp;
    public GameObject obstaculeDeath;
-   public GameObject muerte;
-   public GameObject gameOver;
+   public GameObject hardcoreButton;
 	 private Vector2 spawnPoint;
+	 public GameObject[] livingItems;
 
 	 void Start () {
 	 }
 	// Update is called once per frame
 	void Update () {
 		Timer += Time.deltaTime;
-		if (Timer > timerNextSpawn) {
+		if (Timer > timerNextSpawn && !hardcoreButton.activeSelf) {
 			Timer = 0.0f;
 			SpawnObstacules();
 		}
@@ -62,11 +62,11 @@ public class Character : MonoBehaviour {
 			}
 		}
 
-		if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Stationary && !flagJump && !flagMoveDown &&  !flagMoveUp) {
+		if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Stationary && !flagJump && !flagMoveDown &&  !flagMoveUp && !hardcoreButton.activeSelf) {
 			flagJump = true;
 			GetComponent<Rigidbody2D>().velocity = new Vector2 (0, jump);
     }
-		if (Input.GetKeyDown("space") && !flagJump && !flagMoveDown &&  !flagMoveUp) {
+		if (Input.GetKeyDown("space") && !flagJump && !flagMoveDown &&  !flagMoveUp && !hardcoreButton.activeSelf) {
 			flagJump = true;
 			GetComponent<Rigidbody2D>().velocity = new Vector2 (0, jump);
 		}
@@ -81,7 +81,7 @@ public class Character : MonoBehaviour {
 			  positionFutura = positionActual + 9f;
 				GetComponent<Rigidbody2D>().velocity = new Vector2 (0, +velocidad);
 			} else {
-				StartCoroutine(Wait());
+				muerte();
 			}
 		}
 		if (colider.name == "objectDown(Clone)" && !flagMoveDown) {
@@ -92,11 +92,11 @@ public class Character : MonoBehaviour {
 			  positionFutura = positionActual - 9f;
 				GetComponent<Rigidbody2D>().velocity = new Vector2 (0, -velocidad);
 			} else {
-				StartCoroutine(Wait());
+				muerte();
 			}
 		}
 		if (colider.name == "Obstaculo(Clone)") {
-			StartCoroutine(Wait());
+			muerte();
 		}
   }
 
@@ -128,11 +128,16 @@ public class Character : MonoBehaviour {
 		}
 	}
 
-	IEnumerator Wait()  {
+	void muerte()  {
         // suspend execution for 5 seconds
-				spawnPoint = new Vector2(0, positionActual);
-				Instantiate(gameOver, spawnPoint, Quaternion.identity);
-				yield return new WaitForSeconds(3f);
-				Application.LoadLevel(0);
+        livingItems = GameObject.FindGameObjectsWithTag("items");
+				Debug.Log(livingItems);
+        foreach (GameObject item in livingItems) {
+					Destroy(item);
+        }
+				hardcoreButton.SetActive(true);
+				Debug.Log(hardcoreButton.GetComponent<HardcoreBotton>().isTheBottomOnScreen);
+				hardcoreButton.GetComponent<HardcoreBotton>().isTheBottomOnScreen = true;
+				hardcoreButton.transform.position = new Vector3(0,positionActual,0);
   }
 }
