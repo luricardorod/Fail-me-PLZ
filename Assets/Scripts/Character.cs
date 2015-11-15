@@ -18,6 +18,12 @@ public class Character : MonoBehaviour {
 	 public GameObject obstaculeDown;
    public GameObject obstaculeUp;
    public GameObject obstaculeDeath;
+	 public GameObject obstaculeDownFloorUp;
+   public GameObject obstaculeUpFloorUp;
+   public GameObject obstaculeDeathFloorUp;
+	 public GameObject obstaculeDownFloorDown;
+   public GameObject obstaculeDeathFloorDown;
+   public GameObject obstaculeUpFloorDown;
    public GameObject hardcoreButton;
 	 private Vector2 spawnPoint;
 	 public GameObject[] livingItems;
@@ -73,7 +79,7 @@ public class Character : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D colider) {
-		if (colider.name == "objectUp(Clone)" && !flagMoveUp ) {
+		if ((colider.name == "hidrante(Clone)" || colider.name == "trampolin(Clone)" || colider.name == "sillon(Clone)")  && !flagMoveUp ) {
 			if (positionActual < 9) {
 				flagJump = false;
 				Destroy (colider.gameObject);
@@ -83,8 +89,7 @@ public class Character : MonoBehaviour {
 			} else {
 				muerte();
 			}
-		}
-		if (colider.name == "objectDown(Clone)" && !flagMoveDown) {
+		} else if ((colider.name == "banana(Clone)" || colider.name == "boteBasura(Clone)") && !flagMoveDown) {
 			if (positionActual > -9) {
 				flagJump = false;
 				Destroy (colider.gameObject);
@@ -94,8 +99,7 @@ public class Character : MonoBehaviour {
 			} else {
 				muerte();
 			}
-		}
-		if (colider.name == "Obstaculo(Clone)") {
+		} else {
 			muerte();
 		}
   }
@@ -108,28 +112,29 @@ public class Character : MonoBehaviour {
 			spawnPoint = new Vector2(transform.position.x + 16, 0);
 			Instantiate(obstaculeUp, spawnPoint, Quaternion.identity);
 			spawnPoint = new Vector2(transform.position.x + 16, 9);
-			Instantiate(obstaculeUp, spawnPoint, Quaternion.identity);
+			Instantiate(obstaculeUpFloorUp, spawnPoint, Quaternion.identity);
 			spawnPoint = new Vector2(transform.position.x + 16, -9);
-			Instantiate(obstaculeUp, spawnPoint, Quaternion.identity);
+			Instantiate(obstaculeUpFloorDown, spawnPoint, Quaternion.identity);
 		} else if(selectObstacule == 1) {
 			spawnPoint = new Vector2(transform.position.x + 16, 0);
 			Instantiate(obstaculeDown, spawnPoint, Quaternion.identity);
 			spawnPoint = new Vector2(transform.position.x + 16, 9);
-			Instantiate(obstaculeDown, spawnPoint, Quaternion.identity);
+			Instantiate(obstaculeDownFloorUp, spawnPoint, Quaternion.identity);
 			spawnPoint = new Vector2(transform.position.x + 16, -9);
-			Instantiate(obstaculeDown, spawnPoint, Quaternion.identity);
+			Instantiate(obstaculeDownFloorDown, spawnPoint, Quaternion.identity);
 		} else {
 			spawnPoint = new Vector2(transform.position.x + 16, 0);
 			Instantiate(obstaculeDeath, spawnPoint, Quaternion.identity);
 			spawnPoint = new Vector2(transform.position.x + 16, 9);
-			Instantiate(obstaculeDeath, spawnPoint, Quaternion.identity);
+			Instantiate(obstaculeDeathFloorUp, spawnPoint, Quaternion.identity);
 			spawnPoint = new Vector2(transform.position.x + 16, -9);
-			Instantiate(obstaculeDeath, spawnPoint, Quaternion.identity);
+			Instantiate(obstaculeDeathFloorDown, spawnPoint, Quaternion.identity);
 		}
 	}
 
 	void muerte()  {
         // suspend execution for 5 seconds
+				gameObject.SetActive(false);
         livingItems = GameObject.FindGameObjectsWithTag("items");
 				Debug.Log(livingItems);
         foreach (GameObject item in livingItems) {
@@ -138,6 +143,6 @@ public class Character : MonoBehaviour {
 				hardcoreButton.SetActive(true);
 				Debug.Log(hardcoreButton.GetComponent<HardcoreBotton>().isTheBottomOnScreen);
 				hardcoreButton.GetComponent<HardcoreBotton>().isTheBottomOnScreen = true;
-				hardcoreButton.transform.position = new Vector3(0,positionActual,0);
+				hardcoreButton.transform.position = new Vector3(0,positionActual,hardcoreButton.transform.position.z);
   }
 }

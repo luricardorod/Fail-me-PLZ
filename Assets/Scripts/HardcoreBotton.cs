@@ -9,6 +9,7 @@ public class HardcoreBotton : MonoBehaviour
     public bool isTheBottomOnScreen = false;
     public GameObject textoRevivir;
     public GameObject personaje;
+    public GameObject gameOver;
 
     // Use this for initialization
     void Start()
@@ -27,8 +28,8 @@ public class HardcoreBotton : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             transform.position = new Vector3(transform.position.x, personaje.transform.position.y, transform.position.z);
-            textoRevivir.transform.position = new Vector3(transform.position.x, transform.position.y, -1);
-            textoRevivir.GetComponent<TextMesh>().text = TimesPressed.ToString() + "/" + TimesToBePressed.ToString() + "\n" + TimeLeftToPress.ToString("F2");
+            textoRevivir.transform.position = new Vector3(transform.position.x, transform.position.y, -4);
+            textoRevivir.GetComponent<TextMesh>().text = TimesPressed.ToString() + "/" + TimesToBePressed.ToString() + "\n" + "¡NO TE RINDAS!" + "\n" + TimeLeftToPress.ToString("F2");
             //textoTiempoRestante.transform.position = new Vector3(transform.position.x, transform.position.y, -1);
             //textoTiempoRestante.GetComponent<TextMesh>().text = TimeLeftToPress.ToString();
 
@@ -53,6 +54,7 @@ public class HardcoreBotton : MonoBehaviour
                 isTheBottomOnScreen = false;
                 gameObject.SetActive(false);
                 textoRevivir.GetComponent<TextMesh>().text = "";
+                personaje.SetActive(true);
                 //codigo de revivir al jugador
             }
             //Si se te acabo el tiempo y no haz llegado a la meta de clics
@@ -69,7 +71,10 @@ public class HardcoreBotton : MonoBehaviour
   IEnumerator Wait()  {
     Debug.Log("pancho");
         // suspend execution for 5 seconds
-				yield return new WaitForSeconds(2f);
+        gameOver.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z -1);
+        gameOver.SetActive(true);
+        gameObject.SetActive(false);
+				yield return new WaitForSeconds(4f);
         Application.LoadLevel("Menu");
   }
 
